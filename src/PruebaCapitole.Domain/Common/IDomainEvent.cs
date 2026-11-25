@@ -5,9 +5,9 @@ using System.Text;
 
 namespace PruebaCapitole.Domain.Common
 {
-    public interface DomainEvent<T>
+    public interface IDomainEvent
     {
-        public abstract Expression<Func<T, bool>> ToExpression();
+        DateTimeOffset OccurredAt { get; }
 
     }
 }

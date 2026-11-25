@@ -1,4 +1,5 @@
-﻿using PruebaCapitole.Domain.Bookings.ValueObjects;
+﻿using PruebaCapitole.Domain.Bookings.Events;
+using PruebaCapitole.Domain.Bookings.ValueObjects;
 using PruebaCapitole.Domain.Common;
 using System;
 using System.Collections.Generic;
@@ -37,7 +38,8 @@ namespace PruebaCapitole.Domain.Bookings
                 Status = BookingStatus.Pending,
                 CreatedAt = now
             };
-
+            
+            booking.Raise(new BookingCreated(booking.Id, resourceId, dateRange, customer, now));
             return booking;
         }
 
@@ -55,6 +57,7 @@ namespace PruebaCapitole.Domain.Bookings
             Status = BookingStatus.Confirmed;
             ConfirmedAt = now;
 
+            Raise(new BookingConfirmed(Id, ResourceId, DateRange, Customer, now));
         }
 
         public void Cancel(string? reason, TimeProvider clock)
@@ -71,11 +74,11 @@ namespace PruebaCapitole.Domain.Bookings
             CancelledAt = now;
             CancellationReason = reason;
 
+            Raise(new BookingCancelled(Id, ResourceId, DateRange, Customer,reason, now));
         }
 
         private DomainException InvalidTransition(BookingStatus target) =>
             new(DomainErrors.InvalidTransition, $"No se puede pasar de {Status} a {target}.");
-
 
     }
 }
