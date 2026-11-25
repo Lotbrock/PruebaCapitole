@@ -2,7 +2,7 @@
   <Folder Name="/src/">
     <Project Path="PruebaCapitole.Api/PruebaCapitole.Api.csproj" />
     <Project Path="PruebaCapitole.Domain/PruebaCapitole.Domain.csproj" Id="d9ccf17a-d945-4627-b224-4bcb143573d0" />
-    <Project Path="PruebaCapitole.Infraestructure/PruebaCapitole.Infraestructure.csproj" Id="3fbcbed6-872a-4a41-a3af-776d46f7b3dc" />
+    <Project Path="PruebaCapitole.Infraestructure/PruebaCapitole.Infrastructure.csproj" Id="3fbcbed6-872a-4a41-a3af-776d46f7b3dc" />
     <Project Path="PruebaCapitole.Service/PruebaCapitole.Service.csproj" Id="c4cf5a44-7c49-4dad-a0a2-7216390f28b7" />
     <Project Path="PruebaCapitole.Shared/PruebaCapitole.Shared.csproj" Id="cdf74143-b07f-4439-a9e3-d9b3840ba794" />
   </Folder>
