@@ -361,3 +361,92 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# =====================================================================
+# Additions for this project (.NET + Docker + RabbitMQ/Postgres + SPA)
+# =====================================================================
+
+# Environment variables / secrets (keep the .example template tracked)
+.env
+.env.*
+!.env.example
+appsettings.Local.json
+appsettings.*.local.json
+secrets.json
+*.key
+*.pem
+
+# Docker local overrides and data
+docker-compose.override.yml
+docker-compose.*.local.yml
+.docker/
+pgdata/
+pgadmin-data/
+rabbitmq-data/
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# .NET test / coverage output
+TestResults/
+coverage/
+*.trx
+*.lcov
+CoverageReport/
+.coverage/
+
+# EF Core generated scripts (migrations themselves stay tracked)
+*.sql.generated
+efbundle
+efbundle.exe
+
+# Frontend (web/) - React or Angular
+web/node_modules/
+web/dist/
+web/build/
+web/.angular/
+web/.vite/
+web/.cache/
+web/.parcel-cache/
+web/.eslintcache
+web/.stylelintcache
+web/coverage/
+web/*.tsbuildinfo
+*.tsbuildinfo
+.pnpm-store/
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+.pnp.*
+
+# Playwright (e2e)
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+playwright/.auth/
+
+# Editors / IDEs
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+.idea/
+*.sublime-workspace
+*.swp
+*.swo
+*.sln.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
