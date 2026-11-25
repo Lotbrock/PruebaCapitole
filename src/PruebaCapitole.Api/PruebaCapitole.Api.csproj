@@ -13,4 +13,10 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.24.2-preview.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PruebaCapitole.Infraestructure\PruebaCapitole.Infrastructure.csproj" />
+    <ProjectReference Include="..\PruebaCapitole.Service\PruebaCapitole.Service.csproj" />
+    <ProjectReference Include="..\PruebaCapitole.Shared\PruebaCapitole.Shared.csproj" />
+  </ItemGroup>
+
 </Project>
