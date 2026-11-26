@@ -1,16 +1,26 @@
 using MediatR;
+using PruebaCapitole.Domain.Bookings;
+using PruebaCapitole.Domain.Bookings.ValueObjects;
+using PruebaCapitole.Domain.Common;
+using PruebaCapitole.Service.Abstractions;
 
 namespace PruebaCapitole.Service.Bookings.Commands
 {
-    /// <summary>F4: cancelar una reserva Pending o Confirmed, con motivo opcional.</summary>
     public sealed record CancelBookingCommand(Guid BookingId, string? Reason) : IRequest;
 
-    public sealed class CancelBookingHandler : IRequestHandler<CancelBookingCommand>
+    public sealed class CancelBookingHandler(
+        IBookingRepository repository,
+        IUnitOfWork unitOfWork,
+        TimeProvider clock) : IRequestHandler<CancelBookingCommand>
     {
-        public Task Handle(CancelBookingCommand request, CancellationToken cancellationToken)
+        public async Task Handle(CancelBookingCommand request, CancellationToken cancellationToken)
         {
-            // TODO: cargar el agregado, Cancel(reason) y guardar.
-            throw new NotImplementedException();
+            var booking = await repository.GetByIdAsync(new BookingId(request.BookingId), cancellationToken)
+                ?? throw new DomainException(DomainErrors.NotFound, "La reserva no existe.");
+
+            booking.Cancel(request.Reason, clock);
+
+            await unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 }

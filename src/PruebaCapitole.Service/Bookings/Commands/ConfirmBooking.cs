@@ -1,16 +1,32 @@
 using MediatR;
+using PruebaCapitole.Domain.Bookings;
+using PruebaCapitole.Domain.Bookings.Specifications;
+using PruebaCapitole.Domain.Bookings.ValueObjects;
+using PruebaCapitole.Domain.Common;
+using PruebaCapitole.Service.Abstractions;
 
 namespace PruebaCapitole.Service.Bookings.Commands
 {
-    /// <summary>F3: confirmar una reserva Pending (bloquea solapes con otras Confirmed).</summary>
     public sealed record ConfirmBookingCommand(Guid BookingId) : IRequest;
 
-    public sealed class ConfirmBookingHandler : IRequestHandler<ConfirmBookingCommand>
+    public sealed class ConfirmBookingHandler(
+        IBookingRepository repository,
+        IUnitOfWork unitOfWork,
+        TimeProvider clock) : IRequestHandler<ConfirmBookingCommand>
     {
-        public Task Handle(ConfirmBookingCommand request, CancellationToken cancellationToken)
+        public async Task Handle(ConfirmBookingCommand request, CancellationToken cancellationToken)
         {
-            // TODO: cargar el agregado, evaluar ConfirmedOverlappingBookingSpec, Confirm(...) y guardar.
-            throw new NotImplementedException();
+            var booking = await repository.GetByIdAsync(new BookingId(request.BookingId), cancellationToken)
+                ?? throw new DomainException(DomainErrors.NotFound, "La reserva no existe.");
+            
+            var overlapSpec = new ConfirmedOverlappingBookingSpec(
+                booking.ResourceId, booking.DateRange, excludeId: booking.Id);
+
+            var hasOverlap = await repository.AnyAsync(overlapSpec, cancellationToken);
+
+            booking.Confirm(hasOverlap, clock);
+
+            await unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 }
