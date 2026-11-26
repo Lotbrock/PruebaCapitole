@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PruebaCapitole.Infrastructure.Data;
+using PruebaCapitole.Infrastructure.Data.Seeding;
 using PruebaCapitole.Infrastructure.Repositories;
 using PruebaCapitole.Service.Abstractions;
 using PruebaCapitole.Service.Bookings.Commands;
@@ -27,6 +28,11 @@ namespace PruebaCapitole.Api.Extensions
             services.AddScoped<IBookingRepository, BookingRepository>();
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<CapitoleDbContext>());
             services.AddScoped<IBookingReadService, BookingReadService>();
+            
+            // Seed with Bogus
+            services.Configure<SeedingOptions>(configuration.GetSection(SeedingOptions.SectionName));
+            services.AddSingleton(TimeProvider.System);
+            services.AddScoped<BookingSeeder>();
 
             return services;
         }

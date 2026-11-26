@@ -7,6 +7,7 @@ namespace PruebaCapitole.Service.Bookings.Queries
     public interface IBookingReadService
     {
         Task<PagedResult<BookingListItemDto>> GetPagedAsync(
-            BookingsFilterSpec filter, int page, int pageSize, string? sort, CancellationToken ct);
+            BookingsFilterSpec filter, int page, int pageSize,
+            BookingSortBy sortBy, SortDirection sortDirection, CancellationToken ct);
     }
 }

@@ -28,11 +28,12 @@ namespace PruebaCapitole.Api.Controllers
             [FromQuery] DateTimeOffset? to,
             [FromQuery] int? page,
             [FromQuery] int? pageSize,
-            [FromQuery] string? sort,
+            [FromQuery] BookingSortBy? sortBy,
+            [FromQuery] SortDirection? sortDirection,
             CancellationToken ct)
         {
             var result = await sender.Send(
-                new GetBookingsQuery(resourceId, from, to, page, pageSize, sort), ct);
+                new GetBookingsQuery(resourceId, from, to, page, pageSize, sortBy, sortDirection), ct);
 
             return Ok(result);
         }

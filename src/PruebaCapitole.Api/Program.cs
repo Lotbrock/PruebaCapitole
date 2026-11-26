@@ -14,7 +14,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApiDocs();
-    app.ApplyMigrations(); // crea/actualiza las tablas al arrancar (solo en Development)
+    app.ApplyMigrations(); 
+    await app.SeedDataAsync(); 
 }
 
 app.UseHttpsRedirection();
