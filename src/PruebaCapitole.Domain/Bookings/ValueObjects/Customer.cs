@@ -1,7 +1,4 @@
 ﻿using PruebaCapitole.Domain.Common;
-using PruebaCapitole.Domain.Ejemplo.Bookings;
-using PruebaCapitole.Domain.Ejemplo.Bookings.ValueObjects;
-using PruebaCapitole.Domain.Ejemplo.Common;
 using System;
 using System.Collections.Generic;
 using System.Text;
