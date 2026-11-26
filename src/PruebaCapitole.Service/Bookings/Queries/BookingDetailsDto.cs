@@ -1,6 +1,5 @@
 namespace PruebaCapitole.Service.Bookings.Queries
 {
-    /// <summary>Read model del detalle (F5).</summary>
     public sealed record BookingDetailsDto(
         Guid Id,
         string ResourceId,

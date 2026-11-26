@@ -1,9 +1,12 @@
+using System.Text.Json.Serialization;
 using PruebaCapitole.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(o =>
+        o.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
 builder.Services.AddOpenApiDocs();
 builder.Services.AddServiceLayer();
 builder.Services.AddInfrastructureLayer(builder.Configuration);

@@ -5,6 +5,7 @@ using PruebaCapitole.Infrastructure.Repositories;
 using PruebaCapitole.Service.Abstractions;
 using PruebaCapitole.Service.Bookings.Commands;
 using PruebaCapitole.Service.Bookings.Queries;
+using PruebaCapitole.Service.Mappings;
 
 namespace PruebaCapitole.Api.Extensions
 {
@@ -15,6 +16,8 @@ namespace PruebaCapitole.Api.Extensions
         {
             services.AddMediatR(cfg =>
                 cfg.RegisterServicesFromAssembly(typeof(CreateBookingCommand).Assembly));
+
+            services.AddAutoMapper(_ => { }, typeof(BookingMappingProfile).Assembly);
 
             return services;
         }
