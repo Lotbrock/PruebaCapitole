@@ -1,13 +1,15 @@
 using System.Text.Json.Serialization;
 using PruebaCapitole.Api.Correlation;
 using PruebaCapitole.Api.Extensions;
+using PruebaCapitole.Api.Profiling;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers()
     .AddJsonOptions(o =>
-        o.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
+        o.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)
+    .AddEnvelopeForModelErrors();
 builder.Services.AddOpenApiDocs();
 builder.Services.AddServiceLayer();
 builder.Services.AddInfrastructureLayer(builder.Configuration);
@@ -23,6 +25,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<CorrelationIdMiddleware>();
+app.UseMiddleware<RequestTimingMiddleware>();
 
 app.UseHttpsRedirection();
 

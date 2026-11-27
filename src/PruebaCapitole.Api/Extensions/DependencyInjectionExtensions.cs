@@ -23,6 +23,7 @@ namespace PruebaCapitole.Api.Extensions
             services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssembly(typeof(CreateBookingCommand).Assembly);
+                cfg.AddOpenBehavior(typeof(RequestTimingBehavior<,>));
                 cfg.AddOpenBehavior(typeof(ExceptionHandlingBehavior<,>));
                 cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
             });
