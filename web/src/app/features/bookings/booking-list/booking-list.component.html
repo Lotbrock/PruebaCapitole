@@ -1,0 +1,106 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Reservas</h1>
+  <a class="btn btn-primary" routerLink="/bookings/new">Nueva reserva</a>
+</div>
+
+<form class="card card-body mb-3" [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+  <div class="row g-3 align-items-end">
+    <div class="col-md-3">
+      <label class="form-label" for="resourceId">Recurso</label>
+      <input id="resourceId" class="form-control" formControlName="resourceId" placeholder="Room-A" />
+    </div>
+    <div class="col-md-3">
+      <label class="form-label" for="from">Desde</label>
+      <input id="from" type="datetime-local" class="form-control" formControlName="from" />
+    </div>
+    <div class="col-md-3">
+      <label class="form-label" for="to">Hasta</label>
+      <input id="to" type="datetime-local" class="form-control" formControlName="to" />
+    </div>
+    <div class="col-md-3">
+      <label class="form-label" for="pageSize">Por página</label>
+      <select id="pageSize" class="form-select" formControlName="pageSize">
+        @for (size of pageSizes; track size) {
+          <option [ngValue]="size">{{ size }}</option>
+        }
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label" for="sortBy">Ordenar por</label>
+      <select id="sortBy" class="form-select" formControlName="sortBy">
+        @for (option of sortOptions; track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+        }
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label" for="sortDirection">Dirección</label>
+      <select id="sortDirection" class="form-select" formControlName="sortDirection">
+        <option value="Asc">Ascendente</option>
+        <option value="Desc">Descendente</option>
+      </select>
+    </div>
+    <div class="col-md-6 d-flex gap-2 justify-content-md-end">
+      <button type="submit" class="btn btn-primary">Filtrar</button>
+      <button type="button" class="btn btn-outline-secondary" (click)="clearFilters()">Limpiar</button>
+    </div>
+  </div>
+</form>
+
+<app-error-alert [error]="error()" />
+
+@if (!error()) {
+  <div class="card">
+    <app-generic-table
+      [items]="items()"
+      [loading]="loading()"
+      emptyText="No hay reservas con esos filtros."
+      (rowClick)="open($event)"
+    >
+      <ng-template #header>
+        <tr>
+          <th>Recurso</th>
+          <th>Cliente</th>
+          <th>Inicio</th>
+          <th>Fin</th>
+          <th>Estado</th>
+        </tr>
+      </ng-template>
+      <ng-template #row let-booking>
+        <td>{{ booking.resourceId }}</td>
+        <td>
+          {{ booking.customerName }}
+          <div class="small text-body-secondary">{{ booking.customerEmail }}</div>
+        </td>
+        <td>{{ booking.start | date: 'short' }}</td>
+        <td>{{ booking.end | date: 'short' }}</td>
+        <td><app-status-badge [status]="booking.status" /></td>
+      </ng-template>
+    </app-generic-table>
+  </div>
+
+  @if (result(); as r) {
+    <div class="d-flex justify-content-between align-items-center mt-3">
+      <span class="text-body-secondary">{{ r.totalCount }} reservas</span>
+      <div class="d-flex align-items-center gap-2">
+        <button
+          type="button"
+          class="btn btn-outline-secondary btn-sm"
+          [disabled]="r.page <= 1 || loading()"
+          (click)="goToPage(r.page - 1)"
+        >
+          Anterior
+        </button>
+        <span>Página {{ r.page }} de {{ totalPages() }}</span>
+        <button
+          type="button"
+          class="btn btn-outline-secondary btn-sm"
+          [disabled]="r.page >= totalPages() || loading()"
+          (click)="goToPage(r.page + 1)"
+        >
+          Siguiente
+        </button>
+      </div>
+    </div>
+  }
+}

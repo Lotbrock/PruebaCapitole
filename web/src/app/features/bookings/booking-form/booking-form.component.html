@@ -1,0 +1,77 @@
+<a routerLink="/bookings" class="d-inline-block mb-3">&larr; Volver al listado</a>
+
+<div class="card">
+  <div class="card-header"><h1 class="h4 mb-0">Nueva reserva</h1></div>
+
+  <form class="card-body" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <app-error-alert [error]="formError()" />
+
+    <div class="mb-3">
+      <label class="form-label" for="resourceId">Recurso</label>
+      <input
+        id="resourceId"
+        class="form-control"
+        formControlName="resourceId"
+        placeholder="Room-A"
+        [class.is-invalid]="errorText('resourceId')"
+      />
+      <div class="invalid-feedback">{{ errorText('resourceId') }}</div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label" for="customerName">Nombre del cliente</label>
+        <input
+          id="customerName"
+          class="form-control"
+          formControlName="customerName"
+          [class.is-invalid]="errorText('customerName')"
+        />
+        <div class="invalid-feedback">{{ errorText('customerName') }}</div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label class="form-label" for="customerEmail">Email del cliente</label>
+        <input
+          id="customerEmail"
+          type="email"
+          class="form-control"
+          formControlName="customerEmail"
+          [class.is-invalid]="errorText('customerEmail')"
+        />
+        <div class="invalid-feedback">{{ errorText('customerEmail') }}</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label" for="start">Inicio</label>
+        <input
+          id="start"
+          type="datetime-local"
+          class="form-control"
+          formControlName="start"
+          [class.is-invalid]="errorText('start')"
+        />
+        <div class="invalid-feedback">{{ errorText('start') }}</div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label class="form-label" for="end">Fin</label>
+        <input
+          id="end"
+          type="datetime-local"
+          class="form-control"
+          formControlName="end"
+          [class.is-invalid]="errorText('end')"
+        />
+        <div class="invalid-feedback">{{ errorText('end') }}</div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+      @if (submitting()) {
+        <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+      }
+      Crear reserva
+    </button>
+  </form>
+</div>

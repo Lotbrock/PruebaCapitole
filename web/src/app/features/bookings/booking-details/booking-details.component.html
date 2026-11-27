@@ -1,0 +1,70 @@
+<a routerLink="/bookings" class="d-inline-block mb-3">&larr; Volver al listado</a>
+
+@if (loading() && !booking()) {
+  <div class="text-center text-body-secondary py-5">
+    <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Cargando...
+  </div>
+} @else if (loadError(); as error) {
+  <app-error-alert [error]="error" />
+} @else if (booking(); as b) {
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h1 class="h4 mb-0">Reserva de {{ b.resourceId }}</h1>
+      <app-status-badge [status]="b.status" />
+    </div>
+    <div class="card-body">
+      <dl class="row mb-0">
+        <dt class="col-sm-3">Recurso</dt>
+        <dd class="col-sm-9">{{ b.resourceId }}</dd>
+
+        <dt class="col-sm-3">Cliente</dt>
+        <dd class="col-sm-9">{{ b.customerName }} &middot; {{ b.customerEmail }}</dd>
+
+        <dt class="col-sm-3">Horario (hora local)</dt>
+        <dd class="col-sm-9">{{ b.start | date: 'medium' }} &ndash; {{ b.end | date: 'medium' }}</dd>
+
+        <dt class="col-sm-3">Creada</dt>
+        <dd class="col-sm-9">{{ b.createdAt | date: 'medium' }}</dd>
+
+        @if (b.confirmedAt) {
+          <dt class="col-sm-3">Confirmada</dt>
+          <dd class="col-sm-9">{{ b.confirmedAt | date: 'medium' }}</dd>
+        }
+        @if (b.cancelledAt) {
+          <dt class="col-sm-3">Cancelada</dt>
+          <dd class="col-sm-9">{{ b.cancelledAt | date: 'medium' }}</dd>
+        }
+        @if (b.cancellationReason) {
+          <dt class="col-sm-3">Motivo</dt>
+          <dd class="col-sm-9">{{ b.cancellationReason }}</dd>
+        }
+      </dl>
+    </div>
+
+    @if (canConfirm() || canCancel()) {
+      <div class="card-footer">
+        <app-error-alert [error]="actionError()" />
+
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+          @if (canConfirm()) {
+            <button type="button" class="btn btn-success" [disabled]="busy()" (click)="confirm()">
+              Confirmar
+            </button>
+          }
+          @if (canCancel()) {
+            <input
+              #reason
+              class="form-control w-auto flex-grow-1"
+              maxlength="500"
+              placeholder="Motivo de la cancelación (opcional)"
+              aria-label="Motivo de la cancelación"
+            />
+            <button type="button" class="btn btn-outline-danger" [disabled]="busy()" (click)="cancel(reason.value)">
+              Cancelar reserva
+            </button>
+          }
+        </div>
+      </div>
+    }
+  </div>
+}
