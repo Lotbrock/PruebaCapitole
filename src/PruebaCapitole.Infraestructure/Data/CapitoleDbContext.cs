@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PruebaCapitole.Domain.Bookings;
+using PruebaCapitole.Infrastructure.Outbox;
 using PruebaCapitole.Service.Abstractions;
 
 namespace PruebaCapitole.Infrastructure.Data
@@ -12,6 +13,7 @@ namespace PruebaCapitole.Infrastructure.Data
         : DbContext(options), IUnitOfWork
     {
         public DbSet<Booking> Bookings => Set<Booking>();
+        public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

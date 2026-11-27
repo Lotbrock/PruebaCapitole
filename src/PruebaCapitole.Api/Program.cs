@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using PruebaCapitole.Api.Correlation;
 using PruebaCapitole.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,8 @@ if (app.Environment.IsDevelopment())
     app.ApplyMigrations(); 
     await app.SeedDataAsync(); 
 }
+
+app.UseMiddleware<CorrelationIdMiddleware>();
 
 app.UseHttpsRedirection();
 

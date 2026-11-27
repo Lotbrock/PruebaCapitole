@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using PruebaCapitole.Api.Correlation;
 using PruebaCapitole.Infrastructure.Data;
+using PruebaCapitole.Infrastructure.Data.Interceptors;
+using PruebaCapitole.Infrastructure.Messaging;
+using PruebaCapitole.Infrastructure.Outbox;
 using PruebaCapitole.Infrastructure.Data.Seeding;
 using PruebaCapitole.Infrastructure.Repositories;
 using PruebaCapitole.Service.Abstractions;
@@ -25,13 +29,23 @@ namespace PruebaCapitole.Api.Extensions
         public static IServiceCollection AddInfrastructureLayer(
             this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<CapitoleDbContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<DispatchDomainEventsInterceptor>();
+            services.AddDbContext<CapitoleDbContext>((sp, options) =>
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
+                       .AddInterceptors(sp.GetRequiredService<DispatchDomainEventsInterceptor>()));
 
             services.AddScoped<IBookingRepository, BookingRepository>();
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<CapitoleDbContext>());
             services.AddScoped<IBookingReadService, BookingReadService>();
             
+            services.Configure<OutboxOptions>(configuration.GetSection(OutboxOptions.SectionName));
+            services.Configure<RabbitMqOptions>(configuration.GetSection(RabbitMqOptions.SectionName));
+            services.AddScoped<IOutbox, EfOutbox>();
+            services.AddHostedService<OutboxPublisher>();
+
+            services.AddHttpContextAccessor();
+            services.AddScoped<ICorrelationIdAccessor, HttpCorrelationIdAccessor>();
+
             // Seed with Bogus
             services.Configure<SeedingOptions>(configuration.GetSection(SeedingOptions.SectionName));
             services.AddSingleton(TimeProvider.System);
