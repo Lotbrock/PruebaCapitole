@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using PruebaCapitole.Api.Correlation;
 using PruebaCapitole.Infrastructure.Data;
@@ -7,6 +8,7 @@ using PruebaCapitole.Infrastructure.Outbox;
 using PruebaCapitole.Infrastructure.Data.Seeding;
 using PruebaCapitole.Infrastructure.Repositories;
 using PruebaCapitole.Service.Abstractions;
+using PruebaCapitole.Service.Behaviors;
 using PruebaCapitole.Service.Bookings.Commands;
 using PruebaCapitole.Service.Bookings.Queries;
 using PruebaCapitole.Service.Mappings;
@@ -19,7 +21,13 @@ namespace PruebaCapitole.Api.Extensions
        public static IServiceCollection AddServiceLayer(this IServiceCollection services)
         {
             services.AddMediatR(cfg =>
-                cfg.RegisterServicesFromAssembly(typeof(CreateBookingCommand).Assembly));
+            {
+                cfg.RegisterServicesFromAssembly(typeof(CreateBookingCommand).Assembly);
+                cfg.AddOpenBehavior(typeof(ExceptionHandlingBehavior<,>));
+                cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            });
+
+            services.AddValidatorsFromAssembly(typeof(CreateBookingCommand).Assembly);
 
             services.AddAutoMapper(_ => { }, typeof(BookingMappingProfile).Assembly);
 

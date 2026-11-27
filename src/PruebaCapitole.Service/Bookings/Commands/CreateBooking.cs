@@ -2,6 +2,7 @@ using MediatR;
 using PruebaCapitole.Domain.Bookings;
 using PruebaCapitole.Domain.Bookings.ValueObjects;
 using PruebaCapitole.Service.Abstractions;
+using PruebaCapitole.Service.Common;
 
 namespace PruebaCapitole.Service.Bookings.Commands
 {
@@ -10,14 +11,14 @@ namespace PruebaCapitole.Service.Bookings.Commands
         string CustomerName,
         string CustomerEmail,
         DateTimeOffset Start,
-        DateTimeOffset End) : IRequest<Guid>;
+        DateTimeOffset End) : IRequest<Result<Guid>>;
 
     public sealed class CreateBookingHandler(
         IBookingRepository repository,
         IUnitOfWork unitOfWork,
-        TimeProvider clock) : IRequestHandler<CreateBookingCommand, Guid>
+        TimeProvider clock) : IRequestHandler<CreateBookingCommand, Result<Guid>>
     {
-        public async Task<Guid> Handle(CreateBookingCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(CreateBookingCommand request, CancellationToken cancellationToken)
         {
              var resourceId = new ResourceId(request.ResourceId);
             var customer = Customer.Create(request.CustomerName, request.CustomerEmail);
@@ -28,7 +29,7 @@ namespace PruebaCapitole.Service.Bookings.Commands
             await repository.AddAsync(booking, cancellationToken);
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return booking.Id.Value;
+            return Result<Guid>.Success(booking.Id.Value);
         }
     }
 }

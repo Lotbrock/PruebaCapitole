@@ -15,15 +15,15 @@ namespace PruebaCapitole.Service.Bookings.Queries
         int? Page,
         int? PageSize,
         BookingSortBy? SortBy,
-        SortDirection? SortDirection) : IRequest<PagedResult<BookingListItemDto>>;
+        SortDirection? SortDirection) : IRequest<Result<PagedResult<BookingListItemDto>>>;
 
     public sealed class GetBookingsHandler(IBookingReadService readService)
-        : IRequestHandler<GetBookingsQuery, PagedResult<BookingListItemDto>>
+        : IRequestHandler<GetBookingsQuery, Result<PagedResult<BookingListItemDto>>>
     {
         private const int DefaultPageSize = 20;
         private const int MaxPageSize = 100;
 
-        public Task<PagedResult<BookingListItemDto>> Handle(GetBookingsQuery request, CancellationToken cancellationToken)
+        public async Task<Result<PagedResult<BookingListItemDto>>> Handle(GetBookingsQuery request, CancellationToken cancellationToken)
         {
             if (request.From >= request.To)
                 throw new DomainException(DomainErrors.InvalidRange, "'from' debe ser anterior a 'to'.");
@@ -40,7 +40,8 @@ namespace PruebaCapitole.Service.Bookings.Queries
             var sortBy = request.SortBy ?? BookingSortBy.Start;
             var sortDirection = request.SortDirection ?? SortDirection.Asc;
 
-            return readService.GetPagedAsync(filter, page, pageSize, sortBy, sortDirection, cancellationToken);
+            var result = await readService.GetPagedAsync(filter, page, pageSize, sortBy, sortDirection, cancellationToken);
+            return Result<PagedResult<BookingListItemDto>>.Success(result);
         }
     }
 }
