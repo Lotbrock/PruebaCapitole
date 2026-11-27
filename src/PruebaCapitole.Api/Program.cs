@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using PruebaCapitole.Api.Correlation;
 using PruebaCapitole.Api.Extensions;
 using PruebaCapitole.Api.Profiling;
@@ -34,5 +35,15 @@ app.UseCors(CorsExtensions.PolicyName);
 app.UseAuthorization();
 
 app.MapControllers();
+
+// 200 if everything works, 503 if the database or RabbitMQ is down.
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = (context, report) => context.Response.WriteAsJsonAsync(new
+    {
+        status = report.Status.ToString(),
+        checks = report.Entries.ToDictionary(e => e.Key, e => e.Value.Status.ToString())
+    })
+});
 
 app.Run();

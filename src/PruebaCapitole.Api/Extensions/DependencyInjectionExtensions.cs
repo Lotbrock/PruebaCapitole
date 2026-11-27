@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PruebaCapitole.Api.Correlation;
 using PruebaCapitole.Infrastructure.Data;
 using PruebaCapitole.Infrastructure.Data.Interceptors;
+using PruebaCapitole.Infrastructure.Health;
 using PruebaCapitole.Infrastructure.Messaging;
 using PruebaCapitole.Infrastructure.Outbox;
 using PruebaCapitole.Infrastructure.Data.Seeding;
@@ -51,6 +52,11 @@ namespace PruebaCapitole.Api.Extensions
             services.Configure<RabbitMqOptions>(configuration.GetSection(RabbitMqOptions.SectionName));
             services.AddScoped<IOutbox, EfOutbox>();
             services.AddHostedService<OutboxPublisher>();
+
+            // Health checks (GET /health): database and RabbitMQ.
+            services.AddHealthChecks()
+                .AddCheck<DatabaseHealthCheck>("database", timeout: TimeSpan.FromSeconds(5))
+                .AddCheck<RabbitMqHealthCheck>("rabbitmq", timeout: TimeSpan.FromSeconds(5));
 
             services.AddHttpContextAccessor();
             services.AddScoped<ICorrelationIdAccessor, HttpCorrelationIdAccessor>();

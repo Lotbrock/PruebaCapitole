@@ -63,17 +63,7 @@ namespace PruebaCapitole.Infrastructure.Outbox
 
             if (pending.Count == 0) return;
 
-            var rabbit = rabbitOptions.Value;
-            var factory = new ConnectionFactory
-            {
-                HostName = rabbit.Host,
-                Port = rabbit.Port,
-                UserName = rabbit.User,
-                Password = rabbit.Password,
-                VirtualHost = rabbit.VirtualHost
-            };
-
-            await using var connection = await factory.CreateConnectionAsync(ct);
+            await using var connection = await rabbitOptions.Value.ToConnectionFactory().CreateConnectionAsync(ct);
             // Confirms + tracking: BasicPublishAsync throws if the broker nacks or the message is unroutable.
             await using var channel = await connection.CreateChannelAsync(
                 new CreateChannelOptions(publisherConfirmationsEnabled: true, publisherConfirmationTrackingEnabled: true),

@@ -74,6 +74,7 @@ docker compose up -d --build
 
 - Front (Angular): <http://localhost:8081>. El nginx del contenedor reenvía `/api` a la API.
 - API: <http://localhost:8080/scalar>
+- Salud de la API: <http://localhost:8080/health> (base de datos y RabbitMQ; 200 si todo está bien, 503 si algo falla)
 - RabbitMQ (consola): <http://localhost:15672>
 
 **CORS:** la API permite los orígenes de `Cors:AllowedOrigins` (en `appsettings.json`: `http://localhost:4200`, el `ng serve`, y `http://localhost:8081`, el front en Docker). Si sirves el front desde otro origen, añádelo ahí.
