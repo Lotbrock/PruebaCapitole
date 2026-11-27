@@ -72,7 +72,11 @@ Si prefieres no instalar .NET para ejecutarlo, levanta todo con Docker (la migra
 docker compose up -d --build
 ```
 
-La API queda en <http://localhost:8080/scalar>.
+- Front (Angular): <http://localhost:8081>. El nginx del contenedor reenvía `/api` a la API.
+- API: <http://localhost:8080/scalar>
+- RabbitMQ (consola): <http://localhost:15672>
+
+**CORS:** la API permite los orígenes de `Cors:AllowedOrigins` (en `appsettings.json`: `http://localhost:4200`, el `ng serve`, y `http://localhost:8081`, el front en Docker). Si sirves el front desde otro origen, añádelo ahí.
 
 ## Conectar pgAdmin a la base de datos
 

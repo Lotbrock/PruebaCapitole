@@ -10,6 +10,7 @@ builder.Services.AddControllers()
     .AddJsonOptions(o =>
         o.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
 builder.Services.AddOpenApiDocs();
+builder.Services.AddFrontendCors(builder.Configuration);
 builder.Services.AddServiceLayer();
 builder.Services.AddInfrastructureLayer(builder.Configuration);
 
@@ -27,6 +28,8 @@ app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseMiddleware<RequestTimingMiddleware>();
 
 app.UseHttpsRedirection();
+
+app.UseCors(CorsExtensions.PolicyName);
 
 app.UseAuthorization();
 

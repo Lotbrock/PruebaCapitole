@@ -54,6 +54,16 @@ services:
       rabbitmq:
         condition: service_healthy
 
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: pruebacapitole-web
+    ports:
+      - "8081:80"  # http://localhost:8081 (nginx also forwards /api to the api service)
+    depends_on:
+      - api
+
   rabbitmq:
     image: rabbitmq:4-management
     container_name: pruebacapitole-rabbitmq
