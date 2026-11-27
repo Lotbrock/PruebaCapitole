@@ -106,6 +106,29 @@ Además se crean 5 reservas fijas en el recurso `Sala-Demo` para probar las regl
 
 En Docker puedes cambiar la cantidad con la variable `Seeding__BookingsCount`.
 
+## Mensajería (RabbitMQ y Notifications.Worker)
+
+- RabbitMQ (con panel web) arranca con el compose: http://localhost:15672 (usuario y contraseña en `.env`).
+- `PruebaCapitole.Notifications.Worker` es un proceso independiente que consume `BookingConfirmedV1` y `BookingCancelledV1`, registra una notificación simulada (log + tabla `notifications.notifications`) y expone `/health`.
+- **Idempotencia:** `EventId` es único en la tabla; si el mismo mensaje llega dos veces solo se guarda una notificación.
+- **Reintentos:** 3 intentos con espera creciente (1 s, 2 s, ...), configurable en la sección `Retry`. Si sigue fallando, el mensaje va a la cola de errores (DLQ).
+
+| Elemento | Nombre |
+|---|---|
+| Exchange principal (topic) | `bookings.events` |
+| Exchange de errores (direct) | `bookings.events.dlx` |
+| Cola de confirmadas | `notifications.booking-confirmed.v1` (binding `booking.confirmed.v1`) |
+| Cola de canceladas | `notifications.booking-cancelled.v1` (binding `booking.cancelled.v1`) |
+| Colas de errores | `<cola>.dlq` (binding por su propio nombre en el DLX) |
+
+Migración del Worker (una sola vez, y cada vez que cambie su modelo):
+
+```bash
+dotnet ef migrations add InitialCreate --project src/PruebaCapitole.Notifications.Worker --startup-project src/PruebaCapitole.Notifications.Worker
+```
+
+El Worker aplica sus migraciones al arrancar, en su propio esquema `notifications`.
+
 ## Estructura del proyecto
 
 ```

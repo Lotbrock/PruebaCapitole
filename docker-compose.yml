@@ -48,6 +48,44 @@ services:
       db:
         condition: service_healthy
 
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: pruebacapitole-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-capitole}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-capitole}
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"
+      - "15672:15672"   # management UI: http://localhost:15672
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  notifications-worker:
+    build:
+      context: .
+      dockerfile: src/PruebaCapitole.Notifications.Worker/Dockerfile
+    container_name: pruebacapitole-notifications-worker
+    environment:
+      ASPNETCORE_HTTP_PORTS: "8080"
+      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=${POSTGRES_DB:-pruebacapitole};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-postgres}
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Port: 5672
+      RabbitMq__User: ${RABBITMQ_USER:-capitole}
+      RabbitMq__Password: ${RABBITMQ_PASSWORD:-capitole}
+    ports:
+      - "8082:8080"  # health: http://localhost:8082/health
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
 volumes:
   pgdata:
   pgadmin_data:
+  rabbitmq_data:

@@ -19,14 +19,14 @@ COPY src/PruebaCapitole.Shared/PruebaCapitole.Shared.csproj                src/P
 COPY src/PruebaCapitole.Infraestructure/PruebaCapitole.Infrastructure.csproj src/PruebaCapitole.Infraestructure/
 
 # The NuGet cache lives outside the image layers, so it is not duplicated on every build.
-RUN --mount=type=cache,target=/root/.nuget/packages \
+RUN --mount=type=cache,target=/root/.nuget/packages,sharing=locked \
     dotnet restore "src/PruebaCapitole.Api/PruebaCapitole.Api.csproj"
 
 # 2) Now copy the source code: code changes no longer trigger a new restore.
 COPY src/ src/
 
 # 3) A single compile + publish step (no separate build step, so nothing is compiled twice).
-RUN --mount=type=cache,target=/root/.nuget/packages \
+RUN --mount=type=cache,target=/root/.nuget/packages,sharing=locked \
     dotnet publish "src/PruebaCapitole.Api/PruebaCapitole.Api.csproj" \
         -c $BUILD_CONFIGURATION -o /app/publish --no-restore /p:UseAppHost=false
 
