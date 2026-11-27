@@ -18,7 +18,7 @@ namespace PruebaCapitole.Service.Behaviors
         {
             try
             {
-                return await next();
+                return await next(cancellationToken);
             }
             catch (DomainException ex)
             {

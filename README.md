@@ -146,7 +146,9 @@ src/
   PruebaCapitole.Shared          Eventos de integración (contratos públicos)
   PruebaCapitole.Api             Endpoints REST y configuración
 tests/
-  PruebaCapitole.Api.Tests       Pruebas
+  PruebaCapitole.Domain.Tests          Tests de dominio
+  PruebaCapitole.Service.Tests         Tests de casos de uso y behaviors
+  PruebaCapitole.Api.IntegrationTests  Tests de integración (Docker)
 docs/ADR                         Decisiones de arquitectura
 ```
 
@@ -158,6 +160,23 @@ Las dependencias apuntan siempre hacia el dominio: `Domain` no depende de nadie.
 dotnet test
 ```
 
+Hay tres proyectos en `tests/`:
+
+| Proyecto | Qué prueba | Necesita Docker |
+|---|---|---|
+| `PruebaCapitole.Domain.Tests` | Reglas del dominio: transiciones válidas e inválidas, `DateRange` y solape (incluida la adyacencia), `Customer` y la Specification | No |
+| `PruebaCapitole.Service.Tests` | Casos de uso: `ConfirmBookingHandler` con y sin solape, `ValidationBehavior` y `ExceptionHandlingBehavior` | No |
+| `PruebaCapitole.Api.IntegrationTests` | La API real con PostgreSQL y RabbitMQ (Testcontainers): confirmar publica `BookingConfirmedV1`, solape 409, transición inválida 422, validación 400 | **Sí** |
+
+Para ejecutar solo los que no usan Docker:
+
+```
+dotnet test tests/PruebaCapitole.Domain.Tests
+dotnet test tests/PruebaCapitole.Service.Tests
+```
+
+Los tests de integración necesitan la migración `AddOutbox` creada (ver el paso 3) y Docker en marcha. Los del frontal están en `web/` (`npm test`).
+
 ## Problemas frecuentes
 
 - **`dotnet ef` no se encuentra:** instala la herramienta (ver Requisitos) y abre una terminal nueva.
@@ -166,4 +185,4 @@ dotnet test
 
 ## Estado actual
 
-Proyecto en construcción. Pendiente: implementar los handlers, la Outbox y los eventos, el manejo de errores con `ProblemDetails`, el frontal y los tests. El consumidor de notificaciones (Worker) queda fuera por ahora.
+Proyecto en construcción. Pendiente: estrategia de concurrencia entre confirmaciones, ADRs restantes y las secciones finales del README.

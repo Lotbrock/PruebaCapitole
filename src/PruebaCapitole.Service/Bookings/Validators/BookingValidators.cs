@@ -10,11 +10,13 @@ namespace PruebaCapitole.Service.Bookings.Validators
 
     public sealed class CreateBookingValidator : AbstractValidator<CreateBookingCommand>
     {
-        public CreateBookingValidator()
+        public CreateBookingValidator(TimeProvider clock)
         {
             RuleFor(x => x.ResourceId).NotEmpty().MaximumLength(100);
             RuleFor(x => x.CustomerName).NotEmpty().MaximumLength(Customer.NameMaxLength);
             RuleFor(x => x.CustomerEmail).NotEmpty().EmailAddress().MaximumLength(320);
+            RuleFor(x => x.Start).Must(start => start > clock.GetUtcNow())
+                .WithMessage("'Start' debe ser una fecha futura.");
             RuleFor(x => x.End).GreaterThan(x => x.Start)
                 .WithMessage("'End' debe ser posterior a 'Start'.");
         }

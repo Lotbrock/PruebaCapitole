@@ -8,6 +8,8 @@
     <Project Path="src/PruebaCapitole.Shared/PruebaCapitole.Shared.csproj" Id="cdf74143-b07f-4439-a9e3-d9b3840ba794" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/PruebaCapitole.Api.Tests/PruebaCapitole.Api.Tests.csproj" Id="38c75bf9-3295-4b61-9bcc-0f53af81d3f3" />
+    <Project Path="tests/PruebaCapitole.Api.IntegrationTests/PruebaCapitole.Api.IntegrationTests.csproj" />
+    <Project Path="tests/PruebaCapitole.Domain.Tests/PruebaCapitole.Domain.Tests.csproj" />
+    <Project Path="tests/PruebaCapitole.Service.Tests/PruebaCapitole.Service.Tests.csproj" />
   </Folder>
 </Solution>

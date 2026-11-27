@@ -24,7 +24,7 @@ namespace PruebaCapitole.Api.Extensions
             {
                 Error.ValidationCode => StatusCodes.Status400BadRequest,
                 DomainErrors.NotFound => StatusCodes.Status404NotFound,
-                DomainErrors.Overlap or DomainErrors.InvalidTransition => StatusCodes.Status409Conflict,
+                DomainErrors.Overlap => StatusCodes.Status409Conflict,
                 _ => StatusCodes.Status422UnprocessableEntity
             };
 

@@ -26,7 +26,7 @@ namespace PruebaCapitole.Service.Behaviors
             }
 
             if (failures.Count == 0)
-                return await next();
+                return await next(cancellationToken);
 
             var details = failures
                 .GroupBy(f => f.PropertyName)

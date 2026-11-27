@@ -19,7 +19,7 @@ namespace PruebaCapitole.Service.Behaviors
             var stopwatch = Stopwatch.StartNew();
             try
             {
-                return await next();
+                return await next(cancellationToken);
             }
             finally
             {
