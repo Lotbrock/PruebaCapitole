@@ -5,16 +5,13 @@ namespace PruebaCapitole.Api.Profiling
 {
     /// <summary>
     /// Measures the whole HTTP request, logs it and returns it in the Server-Timing header
-    /// (browsers show it in the Network tab). The same stopwatch feeds "elapsedMs" in the body.
+    /// (browsers show it in the Network tab).
     /// </summary>
     public sealed class RequestTimingMiddleware(RequestDelegate next, ILogger<RequestTimingMiddleware> logger)
     {
-        public const string StopwatchKey = "RequestStopwatch";
-
         public async Task InvokeAsync(HttpContext context)
         {
             var stopwatch = Stopwatch.StartNew();
-            context.Items[StopwatchKey] = stopwatch; // read later to put the time in the response body
 
             // Headers must be written before the response starts.
             context.Response.OnStarting(() =>

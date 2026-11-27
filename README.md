@@ -14,6 +14,8 @@ Antes de empezar, instala:
 | [Docker Desktop](https://www.docker.com/products/docker-desktop/) | Base de datos PostgreSQL y pgAdmin |
 | `dotnet-ef` | Crear las tablas de la base de datos |
 
+> **Por qué .NET 10 y no .NET 8:** el enunciado menciona .NET 8, pero .NET 8 y .NET 9 ya no tienen soporte (su soporte terminó en noviembre de 2026). Se eligió .NET 10 (LTS) para no construir sobre una versión sin parches de seguridad.
+
 Instala `dotnet-ef` una sola vez:
 
 ```
